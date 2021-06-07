@@ -5,10 +5,14 @@ import '../../index.css';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import JSONPretty from 'react-json-prettify';
 import {atomOneLight} from 'react-json-prettify/dist/themes';
+import CustomHeader from '../Panel/header';
+import CustomFooter from '../Panel/footer';
+import SideBar from '../Dashboard/sideDashboard';
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
 const { Option } = Select;
 const { Title,Text } = Typography;
+
 const customTheme = {
     ...atomOneLight,
     value: {
@@ -25,7 +29,8 @@ const response = [{'express':[{'title':'express1/server.js/app.get',
                 admin: true,
                 member: null,
                 permissions: ['read', 'write', 'edit'],
-            }}, {'title':'express2/server.js/app.get',
+            }},
+        {'title':'express2/server.js/app.get',
             'link':'https://github.com/andygillis/react-component-sandbox/blob/683ab1d4794abeac56d385c6213f8ac0c6510637/server.js#L16',
             'code':{
                 name: 'express2',
@@ -33,7 +38,7 @@ const response = [{'express':[{'title':'express1/server.js/app.get',
                 admin: true,
                 member: null,
                 permissions: ['read', 'write', 'edit'],
-            }}, {'title':'express3/server.js/app.get',
+            }},{'title':'express3/server.js/app.get',
             'link':'https://github.com/andygillis/react-component-sandbox/blob/683ab1d4794abeac56d385c6213f8ac0c6510637/server.js#L16',
             'code':{
                 name: 'express3',
@@ -155,7 +160,8 @@ const response = [{'express':[{'title':'express1/server.js/app.get',
 
 const Dashboard = () => {
 
-    const [ torender, setTorender ] = useState([ {'title':'react1/server.js/app.get',
+    const [ torender, setTorender ] = useState(
+        [ {'title':'react1/server.js/app.get',
         'link':'https://github.com/andygillis/react-component-sandbox/blob/683ab1d4794abeac56d385c6213f8ac0c6510637/server.js#L16',
         'code':{
             name: 'John react',
@@ -208,45 +214,19 @@ const Dashboard = () => {
     function handleChange(value) {
         setChoosenTopic(value);
         let temp=[];
-        value.map(each=>{
-            response.map((data)=>{
-                if(data[each]){
-                    data[each].map(single=>{
-                        temp.push(single)
-                    })
-
-                }
-            });
+        response.map((data,index)=>{
+            if(value.includes((Object.keys(data)[0]))){
+                temp = [...temp].concat((Object.values(data)[0]));
+            }
         });
         setTorender(temp);
     }
+
     const options = [{ value: 'express' }, { value: 'react' }, { value: 'vue' }, { value: 'angular' },{ value: 'ember' },{ value: 'backbone' }];
 
     return(
-        <>
             <Layout>
-                <Header  style={{ position: 'fixed', zIndex: 1, width: '100%' , background:'#FFFFFF' ,lineHeight:'0px',paddingTop:'5px'}} >
-                    <Space align='center' direction='horizontal' >
-                        <Image
-                            width={200}
-                            height={50}
-                            preview={false}
-                            src="https://d3ftmdkezac6rp.cloudfront.net/code/javascript/public/images/logo.b81d20edb7ae4d8ff43b886ae5cde1dd.svg"
-                        />
-                        <Select
-                            suffixIcon={<UserOutlined />}
-                            mode="multiple"
-                            size="large"
-                            style={{ width: '500px'}}
-                            placeholder="Search"
-                            defaultValue={choosenTopic}
-                            onChange={handleChange}
-                            optionLabelProp="label"
-                            options={options}
-                        >
-                        </Select>
-                    </Space>
-                </Header>
+                <CustomHeader response={response} Alloptions={options}  callback={handleChange}/>
                 <Layout style={{background:'#F3F4F6', width:'100%'}}>
                     <Row>
                         <Col span={16} style={{ marginTop:'10%',marginLeft:'1%',marginRight:'2%'}}>
@@ -255,8 +235,8 @@ const Dashboard = () => {
                             {torender.map((each)=>{
                                 let temp=[];
                                 temp.push(
-                                            <Card title={<p onClick={()=>showModal(each)}>{each.title}</p>} extra={<a href={each.link}>github link</a>} style={{ width: '100%' }}>
-                                        <JSONPretty json={each.code} theme={customTheme} padding={4} />
+                                    <Card title={<p onClick={()=>showModal(each)}>{each.title}</p>} extra={<a href={each.link}>github link</a>} style={{ width: '100%' }}>
+                                            <JSONPretty json={each.code} theme={customTheme} padding={4} />
                                     </Card>
                                 );
                                 temp.push(<br/>);
@@ -264,52 +244,15 @@ const Dashboard = () => {
                             })}
                         </Col>
                         <Col span={6} style={{marginTop:'17%'}}>
-                            <Card title="JSDoc" style={{ width: '100%' }}>
-                                <p>Fast, unopinionated, minimalist web framework</p>
-                            </Card>
-                            <br/>
-                            <Card title="Most used express functions" style={{ width: '100%' }}>
-                                <a href={'*'}> Express.listen<br/></a>
-                                <Text type="secondary">Listen for connections.</Text>
-                                <br/>
-                                <Divider />
-                                <a href={'*'}> Router.get ,</a>
-                                <a href={'*'}> Express.listen ,</a>
-                                <a href={'*'}> Express.listen </a>
-
-
-
-                            </Card>
-                            <br/>
-                            <Card title="Popular in JavaScript" style={{ width: '100%' }}>
-                                <a href={'*'}> node-fetch<br/></a>
-                                <Text type="secondary">A light-weight module that brings window.fetch to node.js</Text>
-                                <br/>
-                                <br/>
-                                <a href={'*'}> node-fetch<br/></a>
-                                <Text type="secondary">A light-weight module that brings window.fetch to node.js</Text>
-                                <br/>
-                                <br/><a href={'*'}> node-fetch<br/></a>
-                                <Text type="secondary">A light-weight module that brings window.fetch to node.js</Text>
-                                <br/>
-                                <br/><a href={'*'}> node-fetch<br/></a>
-                                <Text type="secondary">A light-weight module that brings window.fetch to node.js</Text>
-                                <br/>
-                                <br/>
-                            </Card>
-                            <br/>
-                            <Card title="Most used express functions" style={{ width: '100%' }}>
-                                <a href={'*'}> test</a>
-                            </Card>
+                           <SideBar/>
                         </Col>
                     </Row>
                     <Modal title={tomodalrender.title} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                         <JSONPretty json={tomodalrender.code} theme={customTheme} padding={4} />
                     </Modal>
                 </Layout>
-                <Footer>Footer</Footer>
+               <CustomFooter/>
             </Layout>
-       </>
     )
 };
 
